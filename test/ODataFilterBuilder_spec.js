@@ -130,7 +130,7 @@ describe('OData filter builder', () => {
             .in('Type/Id', [1, 2, '3']);
 
         expect(compare.toString())
-            .toBe("Type/Id eq 1 or Type/Id eq 2 or Type/Id eq '3'");
+            .toBe("Type/Id in (1, 2, '3')");
       });
 
       it('in(field, [])', () => {
@@ -151,10 +151,10 @@ describe('OData filter builder', () => {
 
       it('in(field, \'otherField\', false)', () => {
         const compare = f()
-            .in('FullName', 'ShortName', false);
+            .in('FullName', ['ShortName'], false);
 
         expect(compare.toString())
-            .toBe('FullName eq ShortName');
+            .toBe("FullName in ('ShortName')");
       });
 
       it('notIn(field, [1,2,3])', () => {
@@ -162,7 +162,7 @@ describe('OData filter builder', () => {
             .notIn('Type/Id', [1, 2, '3']);
 
         expect(compare.toString())
-            .toBe("not (Type/Id eq 1 or Type/Id eq 2 or Type/Id eq '3')");
+            .toBe("not (Type/Id in (1, 2, '3'))");
       });
 
       it('notIn(field, [])', () => {
@@ -183,10 +183,10 @@ describe('OData filter builder', () => {
 
       it('notIn(field, \'1\')', () => {
         const compare = f()
-            .notIn('Type/Id', 1);
+            .notIn('Type/Id', [1]);
 
         expect(compare.toString())
-            .toBe('not (Type/Id eq 1)');
+            .toBe('not (Type/Id in (1))');
       });
 
 
@@ -221,7 +221,7 @@ describe('OData filter builder', () => {
             }, true);
 
         expect(compare.toString())
-            .toBe("id eq 45 and name eq 'john doe' and (category eq 1 or category eq 2 or category eq 3)");
+            .toBe("id eq 45 and name eq 'john doe' and (category in (1, 2, 3))");
       });      
       
       it('compareAll(object) undefined with single property', () => {
@@ -246,7 +246,7 @@ describe('OData filter builder', () => {
             }, true);
 
         expect(compare.toString())
-            .toBe("id eq 45 and (category eq 1 or category eq 2 or category eq 3) and title eq 'My title'");
+            .toBe("id eq 45 and (category in (1, 2, 3)) and title eq 'My title'");
       });                  
     });
 
@@ -338,7 +338,7 @@ describe('OData filter builder', () => {
               .not( x => x.in('Type/Id', [1, 2, '3']));
 
           expect(compare.toString())
-              .toBe("not (Type/Id eq 1 or Type/Id eq 2 or Type/Id eq '3')");
+              .toBe("not (Type/Id in (1, 2, '3'))");
         });
       });
     });

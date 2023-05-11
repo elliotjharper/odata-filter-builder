@@ -1,31 +1,31 @@
-import reduceSourceWithRule from './lib/reduceSourceWithRule';
-import inputRuleToString from './lib/inputRuleToString';
-import sourceRuleToString from './lib/sourceRuleToString';
+import inputRuleToString from "./lib/inputRuleToString";
+import reduceSourceWithRule from "./lib/reduceSourceWithRule";
+import sourceRuleToString from "./lib/sourceRuleToString";
 
 import {
   canonicalFunction,
   contains,
+  endsWith,
   startsWith,
-  endsWith
-} from './lib/canonicalFunctions';
+} from "./lib/canonicalFunctions";
 
 import {
-  not,
-  eq,
-  ne,
-  gt,
-  ge,
-  lt,
-  le,
+  compareAll,
   compareIn,
   compareNotIn,
-  compareAll
-} from './lib/comparison';
+  eq,
+  ge,
+  gt,
+  le,
+  lt,
+  ne,
+  not,
+} from "./lib/comparison";
 
-import * as canonicalFunctions from './lib/canonicalFunctions';
+import * as canonicalFunctions from "./lib/canonicalFunctions";
 
 class ODataFilterBuilder {
-  constructor(condition = 'and') {
+  constructor(condition = "and") {
     if (!(this instanceof ODataFilterBuilder)) {
       return new ODataFilterBuilder(condition);
     }
@@ -33,7 +33,7 @@ class ODataFilterBuilder {
     this._condition = condition;
     this._source = {
       condition: condition,
-      rules: []
+      rules: [],
     };
   }
 
@@ -48,7 +48,11 @@ class ODataFilterBuilder {
    */
   _add(rule, condition = this._condition) {
     // NOTE: if condition not provider, source condition uses
-    this._source = reduceSourceWithRule(this._source, inputRuleToString(rule), condition);
+    this._source = reduceSourceWithRule(
+      this._source,
+      inputRuleToString(rule),
+      condition
+    );
     return this;
   }
 
@@ -62,7 +66,7 @@ class ODataFilterBuilder {
    * @returns {ODataFilterBuilder} The {@link ODataFilterBuilder} instance
    */
   and(rule) {
-    return this._add(rule, 'and');
+    return this._add(rule, "and");
   }
 
   /**
@@ -71,7 +75,7 @@ class ODataFilterBuilder {
    * @returns {ODataFilterBuilder} The {@link ODataFilterBuilder} instance
    */
   or(rule) {
-    return this._add(rule, 'or');
+    return this._add(rule, "or");
   }
 
   /**
@@ -151,11 +155,14 @@ class ODataFilterBuilder {
 
   /**
    * @param {string|InputFieldExpression} field - Field to compare
-   * @param {string[]|string} values - Values to compare with
+   * @param {string[]|number[]} values - Values to compare with
    * @param {boolean} [normaliseValues=true] - Convert string "value" to "'value'" or not. (Convert by default)
    * @returns {ODataFilterBuilder} The {@link ODataFilterBuilder} instance
    */
   in(field, values, normaliseValues) {
+    if(!values || !values.length) {
+        return this;
+    }
     return this._add(compareIn(field, values, normaliseValues));
   }
 
@@ -175,6 +182,9 @@ class ODataFilterBuilder {
    * @returns {ODataFilterBuilder} The {@link ODataFilterBuilder} instance
    */
   notIn(field, values, normaliseValues) {
+    if(!values || !values.length) {
+        return this;
+    }
     return this._add(compareNotIn(field, values, normaliseValues));
   }
 
@@ -220,7 +230,9 @@ class ODataFilterBuilder {
    * @returns {*|ODataFilterBuilder} The {@link ODataFilterBuilder} instance
    */
   fn(functionName, field, values, normaliseValues, reverse) {
-    return this._add(canonicalFunction(functionName, field, values, normaliseValues, reverse));
+    return this._add(
+      canonicalFunction(functionName, field, values, normaliseValues, reverse)
+    );
   }
 
   isEmpty() {
@@ -237,14 +249,11 @@ class ODataFilterBuilder {
   }
 }
 
-ODataFilterBuilder.and = () => new ODataFilterBuilder('and');
-ODataFilterBuilder.or = () => new ODataFilterBuilder('or');
+ODataFilterBuilder.and = () => new ODataFilterBuilder("and");
+ODataFilterBuilder.or = () => new ODataFilterBuilder("or");
 
 ODataFilterBuilder.functions = canonicalFunctions;
 
-export {
-  canonicalFunctions,
-  ODataFilterBuilder
-};
+export { canonicalFunctions, ODataFilterBuilder };
 
 export default ODataFilterBuilder;
