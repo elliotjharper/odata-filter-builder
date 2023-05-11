@@ -136,9 +136,8 @@ interface ODataFilterBuilder {
     /**
      * @param field - Field to compare
      * @param values - Values to compare with
-     * @param [normaliseValues=true] - Convert string "value" to "'value'" or not. (Convert by default)
      */
-    in(field: string | InputFieldExpression, values: any[], normaliseValues?: boolean): ODataFilterBuilder;
+    in(field: string | InputFieldExpression, values: any[]): ODataFilterBuilder;
 
     /**
      * @param objectValue - Object with property and value to compare all in "and" - Loops through property keys
@@ -149,9 +148,8 @@ interface ODataFilterBuilder {
     /**
      * @param field - Field to compare
      * @param values - Values to compare with
-     * @param [normaliseValues=true] - Convert string "value" to "'value'" or not. (Convert by default)
      */
-    notIn(field: string | InputFieldExpression, values: any[], normaliseValues?: boolean): ODataFilterBuilder;
+    notIn(field: string | InputFieldExpression, values: any[]): ODataFilterBuilder;
 
     // Canonical Functions
 
@@ -195,12 +193,12 @@ interface ODataFilterBuilder {
     /**
      * Check if filter is empty
      */
-    isEmpty(): boolean
+    isEmpty(): boolean;
 
     /**
      * Convert filter builder instance to string
      */
-    toString(): string
+    toString(): string;
 }
 
 interface ODataFilterBuilderStatic {
