@@ -1,12 +1,12 @@
 function isString(value) {
-  return typeof value === "string";
+    return typeof value === 'string';
 }
 
 function isDate(value) {
-  return (
-    typeof value === "object" &&
-    Object.prototype.toString.call(value) === "[object Date]"
-  );
+    return (
+        typeof value === 'object' &&
+        Object.prototype.toString.call(value) === '[object Date]'
+    );
 }
 
 /**
@@ -14,15 +14,15 @@ function isDate(value) {
  * @returns {string} - the value serialised, ready to be included in an odata filter query string
  */
 function normaliseValue(value) {
-  if (isString(value)) {
-    return `'${value}'`;
-  }
+    if (isString(value)) {
+        return `'${value}'`;
+    }
 
-  if (isDate(value)) {
-    return value.toISOString();
-  }
+    if (isDate(value)) {
+        return value.toISOString();
+    }
 
-  return value;
+    return value;
 }
 
 export default normaliseValue;
